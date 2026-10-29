@@ -15,22 +15,36 @@ from src.config import load_config
 manager = RunManager()
 cfg = load_config("config.yaml")
 FRONTEND_DIR = Path("frontend")
+#
+# @asynccontextmanager
+# async def lifespan(app: FastAPI):
+#     # startup
+#     await db.init_indexes()
+#     yield
+#     # shutdown
+#     await db.close()
 
-
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    # startup
-    await db.init_indexes()
-    yield
-    # shutdown
-    await db.close()
-
-
-app = FastAPI(title="AI Scientist Web", lifespan=lifespan)
+app = FastAPI(title="AI Scientist Web")
 
 # Loại nội dung nên hiển thị TRỰC TIẾP trên trình duyệt (preview) thay vì luôn tải xuống
 _INLINE_TYPES = {"application/pdf", "image/png", "image/jpeg", "text/plain", "application/x-tex"}
 
+@app.on_event("startup")
+async def startup_event():
+  # Gọi hàm kiểm tra kết nối khi ứng dụng vừa khởi chạy
+  connected = await db.test_connection()
+  if not connected:
+    print(
+        "Cảnh báo: Không thể kết nối tới cơ sở dữ liệu khi khởi động ứng dụng!"
+    )
+
+  # Khởi tạo index nếu cần
+  await db.init_indexes()
+
+
+@app.on_event("shutdown")
+async def shutdown_event():
+  await db.close()
 
 # ---------- Health ----------
 @app.get("/api/health")
