@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AI Scientist — Web</title>
+<link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+<header>
+  <h1>Hệ thống tự động nghiên cứu viết báo khoa học</h1>
+<!--  <p class="tagline">Tự động khảo sát tài liệu → sinh giả thuyết → viết bài báo → tự bình duyệt</p>-->
+</header>
+
+<main>
+  <section class="panel">
+    <h2>1. Nhập chủ đề nghiên cứu</h2>
+    <label>
+      Chủ đề
+      <input id="topic" type="text"
+        placeholder="VD: Parameter-Efficient Fine-Tuning for Vietnamese NLP"
+        value="Parameter-Efficient Fine-Tuning for Vietnamese NLP" />
+    </label>
+
+    <div class="row">
+      <label>Số bài báo khảo sát
+        <input id="numPapers" type="number" min="3" max="20" value="8" />
+      </label>
+      <label style="display:none">Số giả thuyết
+        <input id="maxHyp" type="number" min="1" max="5" value="3" />
+      </label>
+      <label>Model
+        <select id="model">
+          <option value="openai/gpt-oss-120b">openai/gpt-oss-120b (mặc định — xem README để đổi provider)</option>
+        </select>
+      </label>
+    </div>
+<!--    <p class="hint">Nhà cung cấp LLM (provider) được cấu hình ở server qua file <code>.env</code> — đổi model ở đây chỉ có tác dụng nếu model đó tồn tại trên cùng provider. Xem README mục "Chọn nhà cung cấp LLM" để đổi sang Cerebras/Gemini/OpenRouter.</p>-->
+
+    <button id="startBtn">Bắt đầu nghiên cứu</button>
+  </section>
+
+  <section class="panel" id="progressPanel" hidden>
+    <h2>2. Tiến trình</h2>
+    <div class="progress-bar"><div id="progressFill"></div></div>
+    <p id="stageMsg" class="stage-msg">Đang khởi tạo...</p>
+
+    <div class="stages" id="stages">
+      <div class="stage" data-stage="literature">Literature Review</div>
+      <div class="stage" data-stage="hypothesis">Hypothesis</div>
+      <div class="stage" data-stage="writing_abstract">Abstract</div>
+      <div class="stage" data-stage="writing_intro">Introduction</div>
+      <div class="stage" data-stage="writing_related">Related Work</div>
+      <div class="stage" data-stage="writing_method">Methodology</div>
+      <div class="stage" data-stage="writing_expdesign">Experimental Design</div>
+      <div class="stage" data-stage="writing_conclusion">Conclusion</div>
+<!--      <div class="stage" data-stage="figures">Figures</div>-->
+<!--      <div class="stage" data-stage="tables">Tables</div>-->
+      <div class="stage" data-stage="sanitize">Citation Check</div>
+      <div class="stage" data-stage="render">LaTeX Source</div>
+      <div class="stage" data-stage="compile">Build PDF</div>
+      <div class="stage" data-stage="review">Self-Review</div>
+    </div>
+  </section>
+
+  <section class="panel" id="resultsPanel" hidden>
+    <h2>3. Kết quả</h2>
+
+    <div id="pdfBanner" class="pdf-banner" hidden></div>
+
+    <div id="figureGallery" class="figure-gallery"></div>
+
+    <div id="resultsTabs" class="tabs"></div>
+    <div id="resultsContent" class="results-content"></div>
+
+    <div id="pdfPreview" class="pdf-preview" hidden>
+      <iframe id="pdfFrame" title="Xem trước PDF"></iframe>
+    </div>
+
+    <h3>Tải xuống</h3>
+    <ul id="fileList" class="files"></ul>
+  </section>
+
+  <section class="panel" id="errorPanel" hidden>
+    <h2 style="color:#e53e3e">Lỗi</h2>
+    <pre id="errorMsg"></pre>
+  </section>
+
+  <section class="panel" id="historyPanel">
+    <h2>Lịch sử nghiên cứu</h2>
+    <div id="history" class="history"></div>
+  </section>
+</main>
+
+<script src="/app.js"></script>
+</body>
+</html>
