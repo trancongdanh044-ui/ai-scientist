@@ -1,0 +1,41 @@
+llm:
+  model: "openai/gpt-oss-120b"
+  temperature: 0.7
+  max_tokens: 1600
+  tpm_limit: 8000
+  rpm_limit: 20
+  safety_ratio: 0.80
+  timeout_seconds: 90
+  max_attempts: 3
+  cache_ttl_seconds: 3600
+
+research:
+  topic: "Parameter-Efficient Fine-Tuning for Vietnamese NLP"
+  num_papers: 12          # số tài liệu tham khảo (IEEE thường 15-30; tăng nếu cần)
+  max_hypotheses: 3
+
+# --- Tài liệu tham khảo: lấy từ Semantic Scholar / OpenAlex / Crossref / arXiv ---
+references:
+  sources: [semanticscholar, openalex, crossref, arxiv]
+  recent_years: 5         # chỉ lấy bài trong 5 năm gần nhất
+  min_year: 0             # >0 để ghi đè, ví dụ 2021
+  per_query: 12
+  num_queries: 4
+
+# --- Trình bày bài báo: hai cột, mô phỏng bài mẫu NCF (WWW 2017) ---
+paper:
+  template: "templates/paper_acm.tex.j2"
+  related_work_position: after    # "after": sau Experiments (như bài mẫu) | "before": sau Introduction
+  results_file: "results.json"    # số liệu thực nghiệm THẬT của bạn (xem README mục Experiments)
+  funding_note: ""                # vd: "This research is supported by ..." (hiện ở cuối cột trái trang 1)
+  acknowledgment: ""
+  bibliometric_figures: false
+  authors:                        # tối đa 3 tác giả mỗi hàng, như bài mẫu
+    - name: "Your Name"
+      affiliation: "Your University"
+      country: "Vietnam"
+      email: "you@example.com"
+
+output:
+  dir: "outputs"
+  latex_template: "templates/paper_acm.tex.j2"

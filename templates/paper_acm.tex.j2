@@ -1,0 +1,185 @@
+<# Template bài báo hội nghị HAI CỘT mô phỏng bài mẫu "Neural Collaborative Filtering" (WWW 2017, kiểu ACM).
+   Lớp article thuần + package chuẩn => biên dịch được trên mọi máy / Overleaf, không cần acmart.cls.
+   Dấu phân cách Jinja: << biến >>, <% lệnh %>. #>
+<% macro related_block() %>
+\section{Related Work}
+<< related_work >>
+
+<% if table_related %>
+<< table_related >>
+<% endif %>
+<% if fig_trend %>
+\begin{figure}[!t]
+  \centering
+  \includegraphics[width=\columnwidth]{fig_trend.png}
+  \caption{Number of retrieved papers per publication year for the query ``<< query >>''.}
+  \label{fig:trend}
+\end{figure}
+<% endif %>
+<% if fig_terms %>
+\begin{figure}[!t]
+  \centering
+  \includegraphics[width=\columnwidth]{fig_terms.png}
+  \caption{Most frequent terms across the abstracts of the retrieved papers.}
+  \label{fig:terms}
+\end{figure}
+<% endif %>
+<% endmacro %>
+\documentclass[10pt,a4paper,twocolumn]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{times}
+\usepackage[a4paper,top=20mm,bottom=24mm,left=17mm,right=17mm,columnsep=8mm]{geometry}
+\usepackage{microtype}
+<< math_preamble >>
+\usepackage{graphicx,booktabs,tabularx,array,xcolor,url,adjustbox,multirow}
+\usepackage{cite}
+\usepackage[font={small,bf,sf},labelsep=colon,justification=justified,singlelinecheck=true,skip=5pt]{caption}
+\captionsetup[table]{position=above}
+\usepackage[hidelinks]{hyperref}
+
+%% ---- cỡ chữ như bài mẫu: Times 9pt ----
+\makeatletter
+\renewcommand\normalsize{\@setfontsize\normalsize{9}{11}%
+  \abovedisplayskip 6\p@ \@plus2\p@ \@minus3\p@ \abovedisplayshortskip 3\p@ \@plus1\p@
+  \belowdisplayskip \abovedisplayskip \belowdisplayshortskip \abovedisplayshortskip
+  \let\@listi\@listI}
+\renewcommand\small{\@setfontsize\small{8}{9.6}}
+\renewcommand\footnotesize{\@setfontsize\footnotesize{7.5}{8.8}}
+\renewcommand\large{\@setfontsize\large{11}{13}}
+\normalsize
+\setlength{\parindent}{9pt}
+\setlength{\parskip}{0pt}
+\setlength{\textfloatsep}{12pt plus 2pt minus 2pt}
+\setlength{\floatsep}{10pt plus 2pt minus 2pt}
+
+%% ---- đề mục: "1. INTRODUCTION", "3.1 General Framework", "3.1.1 Learning NCF" ----
+\renewcommand\thesection{\arabic{section}.}
+\renewcommand\thesubsection{\arabic{section}.\arabic{subsection}}
+\renewcommand\thesubsubsection{\arabic{section}.\arabic{subsection}.\arabic{subsubsection}}
+\def\@seccntformat#1{\csname the#1\endcsname\hspace{0.7em}}
+\renewcommand\section{\@startsection{section}{1}{\z@}{14pt \@plus 3pt \@minus 2pt}{6pt \@plus 1pt}%
+  {\normalfont\bfseries\fontsize{11}{13}\selectfont\MakeUppercase}}
+\renewcommand\subsection{\@startsection{subsection}{2}{\z@}{11pt \@plus 2pt \@minus 1pt}{5pt \@plus 1pt}%
+  {\normalfont\bfseries\fontsize{11}{13}\selectfont}}
+\renewcommand\subsubsection{\@startsection{subsubsection}{3}{\z@}{9pt \@plus 2pt \@minus 1pt}{4pt \@plus 1pt}%
+  {\normalfont\bfseries\itshape\fontsize{9.5}{11.5}\selectfont}}
+
+%% ---- trang tiêu đề: tiêu đề sans đậm căn giữa, tác giả 3 cột, không đánh số trang ----
+\def\@maketitle{\newpage\null
+  \begin{center}
+    {\sffamily\bfseries\fontsize{15}{18}\selectfont \@title\par}
+    \vskip 14pt
+    {\@author\par}
+  \end{center}\vskip 4pt}
+\pagestyle{empty}
+\let\ps@plain\ps@empty
+\date{}
+\renewenvironment{abstract}{\section*{Abstract}}{}
+\newenvironment{keywords}{\subsection*{Keywords}}{}
+
+%% ---- REFERENCES đánh số như một mục, cỡ chữ nhỏ ----
+\renewenvironment{thebibliography}[1]
+     {\section{References}\small
+      \list{\@biblabel{\@arabic\c@enumiv}}%
+           {\settowidth\labelwidth{\@biblabel{#1}}%
+            \leftmargin\labelwidth \advance\leftmargin\labelsep
+            \itemsep 1pt \parsep 0pt
+            \usecounter{enumiv}\let\p@enumiv\@empty
+            \renewcommand\theenumiv{\@arabic\c@enumiv}}%
+      \sloppy \clubpenalty4000 \@clubpenalty\clubpenalty \widowpenalty4000 \sfcode`\.\@m}
+     {\def\@noitemerr{\@latex@error{Empty `thebibliography' environment}\@ehc}\endlist}
+\makeatother
+\tolerance=1000 \emergencystretch=1.5em
+
+\begin{document}
+\title{<< title >><% if funding_note %>\thanks{<< funding_note >>}<% endif %>}
+\author{<< authors_tex >>}
+\maketitle
+
+\begin{abstract}
+<< abstract >>
+\end{abstract}
+
+\begin{keywords}
+<< keywords >>
+\end{keywords}
+
+\section{Introduction}
+<< introduction >>
+
+<% if related_position == "before" %><< related_block() >><% endif %>
+
+\section{Preliminaries}
+<< preliminaries >>
+
+\section{Method}
+<< methodology >>
+
+<% if fig_pipeline %>
+\begin{figure*}[!t]
+  \centering
+  \includegraphics[width=0.9\textwidth]{fig_pipeline.png}
+  \caption{Overview of the proposed approach.}
+  \label{fig:pipeline}
+\end{figure*}
+<% endif %>
+
+\section{Experiments}
+\label{sec:experiments}
+<< experiments_intro >>
+
+\subsection{Experimental Settings}
+<< experiments_setup >>
+
+<% if table_stats %>
+<< table_stats >>
+<% endif %>
+
+\subsection{Performance Comparison (RQ1)}
+<< table_results >>
+
+<% if fig_results %>
+\begin{figure}[!t]
+  \centering
+  \includegraphics[width=\columnwidth]{fig_results.png}
+  \caption{Performance comparison of the evaluated methods.}
+  \label{fig:results}
+\end{figure}
+<% endif %>
+
+<< exp_comparison >>
+
+\subsection{Ablation Study (RQ2)}
+<% if table_ablation %>
+<< table_ablation >>
+<% endif %>
+<< exp_ablation >>
+
+\subsection{Sensitivity Analysis (RQ3)}
+<% if fig_sensitivity %>
+\begin{figure}[!t]
+  \centering
+  \includegraphics[width=\columnwidth]{fig_sensitivity.png}
+  \caption{Performance w.r.t. << sensitivity_param >>.}
+  \label{fig:sensitivity}
+\end{figure}
+<% endif %>
+<< exp_sensitivity >>
+
+<% if related_position != "before" %><< related_block() >><% endif %>
+
+\section{Conclusion and Future Work}
+<< conclusion >>
+
+<% if acknowledgment %>
+\subsection*{Acknowledgement}
+<< acknowledgment >>
+<% endif %>
+
+<% if has_bib %>
+\bibliographystyle{abbrv}
+\bibliography{references}
+<% endif %>
+
+\end{document}

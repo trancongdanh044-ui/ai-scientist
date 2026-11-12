@@ -1,0 +1,222 @@
+{
+  "_example": true,
+  "_note": "FILE MẪU minh hoạ định dạng — số liệu KHÔNG phải kết quả thật. Sao chép rồi thay bằng kết quả của bạn (bỏ khoá _example).",
+  "datasets": [
+    "MovieLens",
+    "Pinterest"
+  ],
+  "metrics": [
+    "HR@10",
+    "NDCG@10"
+  ],
+  "seeds": 5,
+  "methods": [
+    {
+      "name": "ItemPop",
+      "scores": {
+        "MovieLens": {
+          "HR@10": {
+            "mean": 0.454,
+            "std": 0.0
+          },
+          "NDCG@10": {
+            "mean": 0.253,
+            "std": 0.0
+          }
+        },
+        "Pinterest": {
+          "HR@10": {
+            "mean": 0.275,
+            "std": 0.0
+          },
+          "NDCG@10": {
+            "mean": 0.141,
+            "std": 0.0
+          }
+        }
+      }
+    },
+    {
+      "name": "BPR",
+      "scores": {
+        "MovieLens": {
+          "HR@10": {
+            "mean": 0.69,
+            "std": 0.004
+          },
+          "NDCG@10": {
+            "mean": 0.41,
+            "std": 0.003
+          }
+        },
+        "Pinterest": {
+          "HR@10": {
+            "mean": 0.866,
+            "std": 0.002
+          },
+          "NDCG@10": {
+            "mean": 0.538,
+            "std": 0.002
+          }
+        }
+      }
+    },
+    {
+      "name": "eALS",
+      "scores": {
+        "MovieLens": {
+          "HR@10": {
+            "mean": 0.701,
+            "std": 0.003
+          },
+          "NDCG@10": {
+            "mean": 0.42,
+            "std": 0.003
+          }
+        },
+        "Pinterest": {
+          "HR@10": {
+            "mean": 0.87,
+            "std": 0.002
+          },
+          "NDCG@10": {
+            "mean": 0.548,
+            "std": 0.002
+          }
+        }
+      }
+    },
+    {
+      "name": "NeuMF (proposed)",
+      "proposed": true,
+      "scores": {
+        "MovieLens": {
+          "HR@10": {
+            "mean": 0.73,
+            "std": 0.002
+          },
+          "NDCG@10": {
+            "mean": 0.447,
+            "std": 0.002
+          }
+        },
+        "Pinterest": {
+          "HR@10": {
+            "mean": 0.877,
+            "std": 0.001
+          },
+          "NDCG@10": {
+            "mean": 0.552,
+            "std": 0.001
+          }
+        }
+      }
+    }
+  ],
+  "significance": [
+    {
+      "dataset": "MovieLens",
+      "metric": "HR@10",
+      "baseline": "eALS",
+      "test": "paired t-test",
+      "p": 0.003
+    },
+    {
+      "dataset": "MovieLens",
+      "metric": "HR@10",
+      "baseline": "BPR",
+      "test": "paired t-test",
+      "p": 0.001
+    }
+  ],
+  "ablation": {
+    "dataset": "MovieLens",
+    "variants": [
+      {
+        "name": "NeuMF (full)",
+        "scores": {
+          "HR@10": {
+            "mean": 0.73,
+            "std": 0.002
+          },
+          "NDCG@10": 0.447
+        }
+      },
+      {
+        "name": "w/o pre-training",
+        "scores": {
+          "HR@10": {
+            "mean": 0.705,
+            "std": 0.003
+          },
+          "NDCG@10": 0.426
+        }
+      },
+      {
+        "name": "GMF only",
+        "scores": {
+          "HR@10": {
+            "mean": 0.691,
+            "std": 0.004
+          },
+          "NDCG@10": 0.41
+        }
+      }
+    ]
+  },
+  "sensitivity": {
+    "parameter": "predictive factors",
+    "dataset": "MovieLens",
+    "metric": "HR@10",
+    "values": [
+      8,
+      16,
+      32,
+      64
+    ],
+    "series": [
+      {
+        "name": "GMF",
+        "values": [
+          0.64,
+          0.69,
+          0.7,
+          0.69
+        ]
+      },
+      {
+        "name": "NeuMF",
+        "values": [
+          0.684,
+          0.707,
+          0.726,
+          0.73
+        ]
+      }
+    ]
+  },
+  "dataset_stats": [
+    {
+      "name": "MovieLens",
+      "fields": {
+        "Interactions": 1000209,
+        "Items": 3706,
+        "Users": 6040
+      }
+    },
+    {
+      "name": "Pinterest",
+      "fields": {
+        "Interactions": 1500809,
+        "Items": 9916,
+        "Users": 55187
+      }
+    }
+  ],
+  "setup": {
+    "hardware": "1x RTX 3090",
+    "dataset_urls": {
+      "MovieLens": "http://grouplens.org/datasets/movielens/1m/"
+    }
+  }
+}

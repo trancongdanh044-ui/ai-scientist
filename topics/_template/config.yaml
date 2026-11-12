@@ -1,0 +1,27 @@
+llm:
+  model: "openai/gpt-oss-120b"
+  temperature: 0.7
+  max_tokens: 4000
+
+research:
+  topic: "ĐIỀN TÊN ĐỀ TÀI (tiếng Anh)"   # phải trùng --topic khi chạy run_experiments.py / run_on_kaggle.py
+  num_papers: 12
+  max_hypotheses: 3
+
+references:
+  sources: [semanticscholar, openalex, crossref, arxiv]
+  recent_years: 5
+
+paper:
+  template: "templates/paper_acm.tex.j2"   # đường dẫn tính từ thư mục gốc dự án
+  related_work_position: after
+  results_file: "results.json"             # cạnh file config này
+  authors:
+    - name: "Your Name"
+      affiliation: "Your University"
+      country: "Vietnam"
+      email: "you@example.com"
+
+output:
+  dir: "outputs"                           # cạnh file config này
+  latex_template: "templates/paper_acm.tex.j2"

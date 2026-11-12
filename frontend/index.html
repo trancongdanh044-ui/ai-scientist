@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="color-scheme" content="light dark" />
+<title>AI Scientist — Trợ lý nghiên cứu & viết bài báo khoa học</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%234f46e5'/%3E%3Cpath d='M11 8h10M13 8v7l-4 8a2 2 0 0 0 2 3h10a2 2 0 0 0 2-3l-4-8V8' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" />
+<link rel="stylesheet" href="/style.css" />
+<script>
+  // Áp dụng giao diện sáng/tối trước khi vẽ để tránh nháy màu
+  (function () {
+    var t = localStorage.getItem("theme");
+    if (!t) t = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    document.documentElement.dataset.theme = t;
+  })();
+</script>
+</head>
+<body>
+<a class="skip-link" href="#composer">Bỏ qua điều hướng</a>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="/" aria-label="AI Scientist — trang chủ">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 1.8 3h10.4a2 2 0 0 0 1.8-3l-5-9V3"/></svg>
+      </span>
+      <span class="brand-text"><strong>AI Scientist</strong><small>Không gian nghiên cứu</small></span>
+    </a>
+    <nav class="topnav" aria-label="Điều hướng chính">
+      <a href="#composer">Nghiên cứu mới</a>
+      <a href="#historyPanel">Lịch sử</a>
+    </nav>
+    <div class="topbar-actions">
+      <span id="healthPill" class="pill pill-muted" title="Trạng thái máy chủ"><span class="dot"></span><span id="healthText">Đang kiểm tra…</span></span>
+      <button id="themeBtn" class="icon-btn" type="button" aria-label="Đổi giao diện sáng/tối" title="Đổi giao diện sáng/tối"></button>
+    </div>
+  </div>
+</header>
+
+<main class="layout">
+  <div class="col-main">
+
+    <!-- ===== 1. Soạn yêu cầu ===== -->
+    <section class="card" id="composer" aria-labelledby="composerTitle">
+      <div class="card-head">
+        <div>
+          <h1 id="composerTitle">Bắt đầu nghiên cứu</h1>
+          <p class="lead">Nhập chủ đề để tìm tài liệu, xây dựng giả thuyết và tạo bản thảo khoa học.</p>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="topic">Chủ đề nghiên cứu</label>
+        <textarea id="topic" rows="2" maxlength="300" spellcheck="false"
+          placeholder="Ví dụ: Parameter-Efficient Fine-Tuning for Vietnamese NLP"></textarea>
+        <div class="field-foot">
+          <span class="hint">Mô tả cụ thể phương pháp và lĩnh vực nghiên cứu.</span>
+          <span class="counter" id="topicCount" aria-live="polite">0/300</span>
+        </div>
+        <details class="disclosure"><summary>Xem chủ đề gợi ý</summary><div class="chips" id="examples" aria-label="Chủ đề gợi ý"></div></details>
+      </div>
+
+      <details class="disclosure advanced-settings" id="advancedSettings"><summary>Cấu hình nâng cao <span class="summary-note">8 tài liệu · 3 giả thuyết</span></summary><div class="settings">
+        <div class="field">
+          <label for="numPapers">Số tài liệu tham khảo</label>
+          <div class="stepper" data-for="numPapers">
+            <button type="button" class="step-btn" data-dir="-1" aria-label="Giảm">−</button>
+            <input id="numPapers" type="number" min="3" max="20" value="8" inputmode="numeric" />
+            <button type="button" class="step-btn" data-dir="1" aria-label="Tăng">+</button>
+          </div>
+          <span class="hint">3–20 bài, ưu tiên 5 năm gần nhất</span>
+        </div>
+        <div class="field">
+          <label for="maxHyp">Số giả thuyết</label>
+          <div class="stepper" data-for="maxHyp">
+            <button type="button" class="step-btn" data-dir="-1" aria-label="Giảm">−</button>
+            <input id="maxHyp" type="number" min="1" max="5" value="3" inputmode="numeric" />
+            <button type="button" class="step-btn" data-dir="1" aria-label="Tăng">+</button>
+          </div>
+          <span class="hint">1–5 giả thuyết kiểm chứng</span>
+        </div>
+        <div class="field">
+          <label for="model">Mô hình ngôn ngữ</label>
+          <select id="model">
+            <option value="openai/gpt-oss-120b">openai/gpt-oss-120b</option>
+          </select>
+          <span class="hint">Nhà cung cấp cấu hình ở file <code>.env</code></span>
+        </div>
+      </div>
+
+      </details>
+
+      <div class="notice" role="note">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+        <p><strong>Lưu ý:</strong> Kết quả thí nghiệm chưa được xác minh sẽ được đánh dấu TBD. Hãy kiểm tra bản thảo trước khi sử dụng.</p>
+      </div>
+
+      <div class="actions">
+        <button id="startBtn" class="btn btn-primary btn-lg" type="button">
+          <span class="btn-icon" aria-hidden="true"></span>
+          <span class="btn-label">Bắt đầu nghiên cứu</span>
+        </button>
+        <span class="hint">Có thể mất vài phút · Ctrl + Enter để bắt đầu</span>
+      </div>
+    </section>
+
+    <!-- ===== 2. Tiến trình ===== -->
+    <section class="card" id="progressPanel" aria-labelledby="progressTitle" hidden>
+      <div class="card-head row-between">
+        <div>
+          <h2 id="progressTitle">Tiến trình thực hiện</h2>
+          <p class="muted small" id="runTopic"></p>
+        </div>
+        <div class="progress-meta">
+          <span class="percent" id="percentText">0%</span>
+          <span class="muted small" id="elapsedText">00:00</span>
+        </div>
+      </div>
+      <div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progressBar">
+        <div id="progressFill"></div>
+      </div>
+      <p id="stageMsg" class="stage-msg" aria-live="polite">Đang khởi tạo…</p>
+      <details class="disclosure progress-details"><summary>Xem chi tiết các bước</summary><div class="phases" id="phases"></div></details>
+    </section>
+
+    <!-- ===== Lỗi ===== -->
+    <section class="card card-error" id="errorPanel" role="alert" hidden>
+      <div class="card-head">
+        <h2>Không thể hoàn tất</h2>
+      </div>
+      <pre id="errorMsg"></pre>
+      <p class="muted small">Nếu lỗi liên quan giới hạn token/API, hãy chờ rồi thử lại hoặc giảm quy mô nghiên cứu trong Cấu hình nâng cao.</p>
+    </section>
+
+    <!-- ===== 3. Kết quả ===== -->
+    <section class="card" id="resultsPanel" aria-labelledby="resultsTitle" hidden>
+      <div class="result-head">
+        <div class="result-title">
+          <span class="eyebrow">Kết quả</span>
+          <h2 id="resultsTitle"></h2>
+          <div class="meta-row" id="resultMeta"></div>
+        </div>
+        <div class="result-actions" id="resultActions"></div>
+      </div>
+
+      <div id="pdfBanner" class="banner" hidden></div>
+
+      <div class="tabs" role="tablist" id="resultsTabs" aria-label="Nội dung kết quả"></div>
+      <div id="resultsContent" class="tab-panel" role="tabpanel" tabindex="0"></div>
+    </section>
+  </div>
+
+  <aside class="col-side">
+    <section class="card sticky" id="historyPanel" aria-labelledby="historyTitle">
+      <div class="card-head row-between">
+        <h2 id="historyTitle">Lịch sử nghiên cứu</h2>
+        <button id="refreshHistory" class="icon-btn" type="button" aria-label="Làm mới lịch sử" title="Làm mới"></button>
+      </div>
+      <div id="history" class="history" aria-live="polite"></div>
+    </section>
+  </aside>
+</main>
+
+<footer class="footer">
+  <span>AI Scientist · Bài báo sinh tự động cần được kiểm tra lại bởi tác giả trước khi nộp.</span>
+</footer>
+
+<div id="toasts" class="toasts" aria-live="polite" aria-atomic="false"></div>
+
+<dialog id="lightbox" class="lightbox">
+  <form method="dialog"><button class="icon-btn lightbox-close" aria-label="Đóng">×</button></form>
+  <img id="lightboxImg" alt="" />
+  <p id="lightboxCap" class="muted small"></p>
+</dialog>
+
+<script src="/app.js"></script>
+</body>
+</html>
